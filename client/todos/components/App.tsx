@@ -5,7 +5,7 @@ import Input from './Input'
 class App extends React.Component<any, any> {
     render() {
         return(
-            <div>
+            <div className='search'>
                 <Input />
                 <List />
             </div>
