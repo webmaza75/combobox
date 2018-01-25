@@ -43,7 +43,7 @@ class List extends React.Component<IProps, IState> {
                     key={index} 
                     id={index+''} 
                     value={item.title} 
-                    onClick={this.handleChange}>{item.title}
+                    onClick={this.handleChange}>{item.id}: {item.title} <img src={item.thumbnailUrl} width='20' height='20'/>
                 </div>);
 
         let text = (!items.length) ? 'Ничего не найдено' : `Найдено: ${items.length}` ;
