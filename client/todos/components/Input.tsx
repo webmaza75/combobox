@@ -2,27 +2,31 @@ import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import {
     LOAD_LIST_ITEMS,
-    SHOW_FOUND,
 } from '../actions'
 import { Promise } from 'es6-promise';
 
 
 type list = {
-    name: string,
-    alpha2_code: string,
-    alpha3_code: string
+    albumId: number,
+    id: number,
+    title: string,
+    url: string
+    thumbnailUrl: string
 }
 
 interface IProps {
     listItems?: list[],
-    selectItem?: null,
-    searchVal: string,
+    selectedItem?: list,
+    searchVal?: string,
     loadListItems?: (searchVal: string) => void
 }
 
 interface IState {
     listItems?: list[],
     searchVal: string,
+    isLoading: boolean,
+    timeRun: number,
+    selectedItem?: list
 }
 
 class Input extends React.Component<IProps, IState> {
@@ -30,24 +34,46 @@ class Input extends React.Component<IProps, IState> {
     constructor(props: IProps) {
         super(props);
         this.state = {
-            searchVal: ''
+            searchVal: '',
+            timeRun: null,
+            isLoading: false,
+            selectedItem: null
         }
     }
 
     handleChangeSearch = (e) => {
         let value = e.target.value;
+        let timeStart = (new Date()).getTime();
         this.setState({
-            searchVal: value
+            searchVal: value,
+            timeRun: timeStart,
+            isLoading: true,
         });
 
-        setTimeout(() => {
+        //let timeStart = new Date().getTime();
+        let timerId = setTimeout(() => {
+            // if (this.state.timeRun + 3 >= (new Date()).getTime()) {
+            //     clearTimeout(timerId);
+            // }
             this.props.loadListItems(value);
+            // this.setState({
+            //     isLoading: false
+            // });
         }, 1000);
     };
 
+    componentWillReceiveProps (nextProps) {
+        if ( nextProps.selectedItem ) {
+            let item = nextProps.selectedItem['title'];
+            this.setState({ searchVal: item, 
+                timeRun: 1,
+                isLoading: true, });
+        }
+    }
+
     render() {
         return (
-            <input type='text' onChange={this.handleChangeSearch} value={this.state.searchVal} />
+            <input className='search__text' type='text' onChange={this.handleChangeSearch} value={this.state.searchVal} />
         );
     }
 }
@@ -56,7 +82,7 @@ function mapStateToProps(state: IProps) {
     return {
         listItems: state.listItems,
         searchVal: state.searchVal,
-        selectItem: state.selectItem,
+        selectedItem: state.selectedItem,
     };
 }
 
@@ -68,7 +94,7 @@ function httpGet(url) {
 
         xhr.onload = function () {
             if (xhr.status == 200) {
-                resolve(xhr.response);
+                resolve(JSON.parse(xhr.response));
             } else {
                 var error = new Error(xhr.statusText);
                 error.name = xhr.status + '';
@@ -91,23 +117,32 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
     return {
         loadListItems: function (searchVal) {
-            //https://jsonplaceholder.typicode.com/photos
+            let fullUrl = `https://jsonplaceholder.typicode.com/photos/`;
             //let fullUrl = 'http://services.groupkt.com/country/search?text=' + searchVal;
-            let fullUrl = `https://typeahead-js-twitter-api-proxy.herokuapp.com/demo/search?q=${searchVal}`;
+            //let fullUrl = `https://typeahead-js-twitter-api-proxy.herokuapp.com/demo/search?q=${searchVal}`;
 
             httpGet(fullUrl)
                 .then(
                     response => {
-                        //let res = JSON.stringify(response);
+                        let res = [];
 
-                        console.log(response);
+                       //filter response with title
+                        for ( let item in response) {
+                            if (response[item]['title'].indexOf(searchVal) >= 0 ) {
+                                res.push(response[item]);
+                            }
+                        } 
+
                         const action = {
                             type: LOAD_LIST_ITEMS,
-                            payload: response
+                            payload: res
                         };
                         dispatch(action);
                     },
-                    error => alert(`Rejected: ${error}`)
+                    error => {
+                        //alert(`Rejected: ${error}`)
+                        // hadn`t completed yet
+                    }
                 );
 
 
