@@ -1,4 +1,4 @@
-
+/*
 .new{
   background-color: #ffffff;
   display: inline-block;
@@ -117,4 +117,29 @@ div.todoapp{
 body {
   min-width: 0%;
   max-width: 100%;
+}*/
+
+.search {
+  width: 80%;
+  padding: 20x;
+}
+
+.search__text {
+  margin-top: 20px;
+  width: 100%;
+  padding: 7px 15px;
+  border-radius: 3px;
+}
+
+.search__count {
+  margin: 5px 0 10px;
+  text-decoration: underline;
+}
+
+.search__content {
+  width: 100%;
+}
+
+.search__content:hover {
+  cursor: pointer;
 }
