@@ -2,6 +2,7 @@ import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import {
     LOAD_LIST_ITEMS,
+    SHOW_ERROR
 } from '../actions'
 import { Promise } from 'es6-promise';
 
@@ -18,7 +19,9 @@ interface IProps {
     listItems?: list[],
     selectedItem?: list,
     searchVal?: string,
-    loadListItems?: (searchVal: string) => void
+    loadListItems?: (searchVal: string) => void,
+    showError?: (err: string) => void,
+    error?: null
 }
 
 interface IState {
@@ -72,8 +75,13 @@ class Input extends React.Component<IProps, IState> {
     }
 
     render() {
+        let err = (this.props.error) ? <div className='err_message' >{this.props.error}</div> : null;
+
         return (
-            <input className='search__text' type='text' onChange={this.handleChangeSearch} value={this.state.searchVal} />
+            <div>
+                {err}
+                <input className='search__text' type='text' onChange={this.handleChangeSearch} value={this.state.searchVal} />
+            </div>
         );
     }
 }
@@ -83,6 +91,7 @@ function mapStateToProps(state: IProps) {
         listItems: state.listItems,
         searchVal: state.searchVal,
         selectedItem: state.selectedItem,
+        error: state.error
     };
 }
 
@@ -140,8 +149,13 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
                         dispatch(action);
                     },
                     error => {
-                        //alert(`Rejected: ${error}`)
-                        // hadn`t completed yet
+                        //alert(error);
+
+                        const action = {
+                            type: SHOW_ERROR,
+                            payload: error
+                        };
+                        dispatch(action);
                     }
                 );
 
@@ -157,7 +171,14 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
             // })
 
             //dispatch(action);
-        }
+        }/*,
+        showError (err) {
+            const action = {
+                type: SHOW_ERROR,
+                payload: err
+            };
+            dispatch(action);
+        }*/
     };
 }
 

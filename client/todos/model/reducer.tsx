@@ -1,12 +1,10 @@
-import {LOAD_LIST_ITEMS, SELECT_ITEM} from '../actions'
+import {LOAD_LIST_ITEMS, SELECT_ITEM, SHOW_ERROR} from '../actions'
 
 const initialState = {
-    listItems: [
-        {"albumId": 1, "id": 1, "title": "url1.1", "thumbnailUrl": "thumurl1.2"},
-        {"albumId": 1, "id": 2, "title": "url2.1", "thumbnailUrl": "thumurl2.2"},
-    ],
+    listItems: [],
     selectedItem: null,
-    isLoading: false //searchVal: '',
+    isLoading: false,
+    error: null
 }
 
 export default function reducer(state = initialState, action) {
@@ -19,12 +17,17 @@ export default function reducer(state = initialState, action) {
             newState.listItems = tmpList;
             newState.isLoading = false;
             newState.selectedItem = null;
+            newState.error = null;
         break;
         case SELECT_ITEM: 
             let val = newState.listItems[action.payload];
-            
+
             newState.selectedItem = val;
-            newState.listItems = newState.listItems.splice(action.payload, 1)
+            newState.listItems = newState.listItems.splice(action.payload, 1);
+            newState.error = null;
+        break;
+        case SHOW_ERROR: 
+            newState.error = action.payload.message;
         break;
         default:
         return state;

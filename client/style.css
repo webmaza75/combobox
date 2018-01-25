@@ -143,3 +143,11 @@ body {
 .search__content:hover {
   cursor: pointer;
 }
+
+.err_message {
+  border: 1px solid red;
+  background: seashell;
+  padding: 5px 15px;
+  margin-top: 10px;
+  width: 100%;
+}
