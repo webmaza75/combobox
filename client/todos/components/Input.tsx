@@ -2,35 +2,30 @@ import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 import {
     LOAD_LIST_ITEMS,
-    SHOW_ERROR
+    SHOW_ERROR,
+    SET_PROCESSING
 } from '../actions'
 import { Promise } from 'es6-promise';
+import TList from '../model/model'
 
-
-type list = {
-    albumId: number,
-    id: number,
-    title: string,
-    url: string
-    thumbnailUrl: string
-}
 
 interface IProps {
-    listItems?: list[],
-    selectedItem?: list,
+    listItems?: TList[],
+    selectedItem?: TList,
     searchVal?: string,
     loadListItems?: (searchVal: string) => void,
     showError?: (err: string) => void,
-    error?: null
+    error?: null,
+    isLoading?: boolean
 }
 
 interface IState {
-    listItems?: list[],
+    listItems?: TList[],
     searchVal: string,
-    isLoading: boolean,
-    timeRun: number,
-    selectedItem?: list
+    selectedItem?: TList,
 }
+
+let timerId = null;
 
 class Input extends React.Component<IProps, IState> {
 
@@ -38,49 +33,61 @@ class Input extends React.Component<IProps, IState> {
         super(props);
         this.state = {
             searchVal: '',
-            timeRun: null,
-            isLoading: false,
             selectedItem: null
         }
     }
 
-    handleChangeSearch = (e) => {
-        let value = e.target.value;
-        let timeStart = (new Date()).getTime();
-        this.setState({
-            searchVal: value,
-            timeRun: timeStart,
-            isLoading: true,
+    handleResetEvent = (e) => {
+        this.setState({ 
+            searchVal: '',
+            selectedItem: null
         });
 
-        //let timeStart = new Date().getTime();
-        let timerId = setTimeout(() => {
-            // if (this.state.timeRun + 3 >= (new Date()).getTime()) {
-            //     clearTimeout(timerId);
-            // }
+        this.handleSetTimout('');
+    }
+
+    handleSetTimout(value) {
+        if (timerId) {
+            clearTimeout(timerId);
+        }
+        
+        timerId = setTimeout(() => {
             this.props.loadListItems(value);
-            // this.setState({
-            //     isLoading: false
-            // });
-        }, 1000);
+        }, 500);
+    }
+
+    handleChangeSearch = (e) => {
+        let value = e.target.value;
+
+        this.setState({
+            searchVal: value,
+            selectedItem: null
+        });
+
+        this.handleSetTimout(value);
     };
 
-    componentWillReceiveProps (nextProps) {
+    componentWillReceiveProps (nextProps: IProps) {
         if ( nextProps.selectedItem ) {
-            let item = nextProps.selectedItem['title'];
-            this.setState({ searchVal: item, 
-                timeRun: 1,
-                isLoading: true, });
+            const item = nextProps.selectedItem['title'];
+
+            this.setState({ 
+                searchVal: item, 
+            });
         }
     }
 
     render() {
-        let err = (this.props.error) ? <div className='err_message' >{this.props.error}</div> : null;
+        const {error, isLoading} = this.props; // just a string
+        const err = error ? <div className='err_message' >error</div> : null;
+        let loader = (isLoading) ? <div className='loader'></div> : <div></div>;
 
         return (
             <div>
-                {err}
                 <input className='search__text' type='text' onChange={this.handleChangeSearch} value={this.state.searchVal} />
+                <span onClick={this.handleResetEvent} className='icon_reset'>&#8634;</span>
+                {err}
+                {loader}
             </div>
         );
     }
@@ -91,7 +98,8 @@ function mapStateToProps(state: IProps) {
         listItems: state.listItems,
         searchVal: state.searchVal,
         selectedItem: state.selectedItem,
-        error: state.error
+        error: state.error,
+        isLoading: state.isLoading
     };
 }
 
@@ -125,60 +133,58 @@ function httpGet(url) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
 
     return {
-        loadListItems: function (searchVal) {
-            let fullUrl = `https://jsonplaceholder.typicode.com/photos/`;
+        loadListItems: function (searchVal: string) {
+            let fullUrl: string = `https://jsonplaceholder.typicode.com/photos/`;
             //let fullUrl = 'http://services.groupkt.com/country/search?text=' + searchVal;
             //let fullUrl = `https://typeahead-js-twitter-api-proxy.herokuapp.com/demo/search?q=${searchVal}`;
 
-            httpGet(fullUrl)
-                .then(
-                    response => {
-                        let res = [];
+                const action = {
+                    type: SET_PROCESSING,
+                    payload: searchVal // loading data
+                };
+                dispatch(action);
 
-                       //filter response with title
-                        for ( let item in response) {
-                            if (response[item]['title'].indexOf(searchVal) >= 0 ) {
-                                res.push(response[item]);
-                            }
-                        } 
+            if (searchVal == '') {
+                const action = {
+                    type: LOAD_LIST_ITEMS,
+                    payload: []
+                };
+                dispatch(action);
+            } else {
+//setTimeout(() => {
+                httpGet(fullUrl)
+                    .then(
+                        response => {
+                            const res = [];
 
-                        const action = {
-                            type: LOAD_LIST_ITEMS,
-                            payload: res
-                        };
-                        dispatch(action);
-                    },
-                    error => {
-                        //alert(error);
+                        //filter response with title
+                            for ( let item in response) {
+                                if (response[item]['title'].indexOf(searchVal) >= 0 ) {
+                                    res.push(response[item]);
+                                }
+                            } 
+                        
 
-                        const action = {
-                            type: SHOW_ERROR,
-                            payload: error
-                        };
-                        dispatch(action);
-                    }
-                );
+                            const action = {
+                                type: LOAD_LIST_ITEMS,
+                                payload: res
+                            };
+                            dispatch(action);
+                        },
+                        error => {
 
+                            const action = {
+                                type: SHOW_ERROR,
+                                payload: error
+                            };
+                            dispatch(action);
+                        }
+                    );
+                
+              //  }, 500); // end of setTimeout
 
-
-            //1.update text+progress loading
-            //ajax => Promise;
-            //.then(() => {
-            //2.update list+progress finished
-            //},
-            // () => {
-            //2.show error
-            // })
-
-            //dispatch(action);
-        }/*,
-        showError (err) {
-            const action = {
-                type: SHOW_ERROR,
-                payload: err
-            };
-            dispatch(action);
-        }*/
+            }
+        }
     };
 }
 

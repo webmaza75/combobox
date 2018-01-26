@@ -3,50 +3,44 @@ import {connect, Dispatch} from 'react-redux'
 import {
     LOAD_LIST_ITEMS,
     SELECT_ITEM,
+    SET_PROCESSING
 } from '../actions'
+import TList from '../model/model'
 
-type list = {
-    albumId: number,
-    id: number,
-    title: string,
-    url: string
-    thumbnailUrl: string
-}
 
 interface IProps {
-    listItems?: list[],
-    selectedItem?: list
+    listItems?: TList[],
+    selectedItem?: TList
     selectItem?: (index: number) => void,
+    searchVal: string,
 }
 
 interface IState {
-    listItems?: list[],
-    selectedItem?: list
+    listItems?: TList[],
+    selectedItem?: TList
 }
 
 class List extends React.Component<IProps, IState> {
 
-    constructor(props: IProps) {
-        super(props);
-    }
-
-    handleChange = (e) => {
-        let index = +e.target.id;
+    handleChange = (e) => { 
+        let index = e.target.id;
         this.props.selectItem(index);
     }
-
+//.replace(searchVal, `<span className='highlight'>`+searchVal+`</span>`)
     render() {
-        let list = this.props.listItems;
-        let items = list.map(
+        const {listItems, searchVal} = this.props;
+
+        const items = listItems.map(
             (item, index) => 
                 <div 
                     key={index} 
                     id={index+''} 
                     value={item.title} 
-                    onClick={this.handleChange}>{item.id}: {item.title} <img src={item.thumbnailUrl} width='20' height='20'/>
+                    onClick={this.handleChange}>
+                {item.id}: <div id={index+''}>{ item.title.replace(searchVal, `<i className='highlight'>${searchVal}</i>`)}</div> <img src={item.thumbnailUrl} width='20' height='20'/>
                 </div>);
 
-        let text = (!items.length) ? 'Ничего не найдено' : `Найдено: ${items.length}` ;
+        const text = (!items.length) ? 'Ничего не найдено' : `Найдено: ${items.length}` ;
 
         return(
             <div className='search__content'>
@@ -55,13 +49,13 @@ class List extends React.Component<IProps, IState> {
             </div>
         );
     }
-
 }
 
 function mapStateToProps(state: IProps) {
     return { 
         listItems: state.listItems,
-        selectedItem: state.selectedItem
+        selectedItem: state.selectedItem,
+        searchVal: state.searchVal,
     };
 }
 
