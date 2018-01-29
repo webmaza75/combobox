@@ -1,3 +1,7 @@
+body {
+  background-color: rgb(205, 245, 241);
+}
+
 .search {
   width: 80%;
   position: relative;
