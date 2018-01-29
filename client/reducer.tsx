@@ -37,6 +37,7 @@ export default function reducer(state = initialState, action) {
             const list = [...newState.listItems];
             list.length = 0;
             newState.listItems = list;
+            newState.selectedItem = null;
         break;
         default:
         return state;
