@@ -1,4 +1,4 @@
-import {LOAD_LIST_ITEMS, SELECT_ITEM, SHOW_ERROR, SET_PROCESSING} from '../actions'
+import {LOAD_LIST_ITEMS, SELECT_ITEM, SHOW_ERROR, SET_PROCESSING} from './actions'
 
 const initialState = {
     listItems: [],
