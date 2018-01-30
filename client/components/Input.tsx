@@ -5,8 +5,8 @@ import {
     SHOW_ERROR,
     SET_PROCESSING
 } from '../actions'
-import { Promise } from 'es6-promise';
 import TList from '../model/model'
+import { getData } from '../actions'
 
 
 interface IProps {
@@ -103,87 +103,11 @@ function mapStateToProps(state: IProps) {
     };
 }
 
-function httpGet(url) {
-    let promise = new Promise((resolve, reject) => {
-
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
-
-        xhr.onload = function () {
-            if (xhr.status == 200) {
-                resolve(JSON.parse(xhr.response));
-            } else {
-                var error = new Error(xhr.statusText);
-                error.name = xhr.status + '';
-                reject(error);
-            }
-        };
-
-        xhr.onerror = function () {
-            reject(new Error("Network Error"));
-        };
-
-        xhr.send();
-    });
-
-    return promise;
-
-}
-
 function mapDispatchToProps(dispatch: Dispatch<any>) {
 
     return {
         loadListItems: function (searchVal: string) {
-            let fullUrl: string = `https://jsonplaceholder.typicode.com/photos/`;
-            //let fullUrl = 'http://services.groupkt.com/country/search?text=' + searchVal;
-            //let fullUrl = `https://typeahead-js-twitter-api-proxy.herokuapp.com/demo/search?q=${searchVal}`;
-
-                const action = {
-                    type: SET_PROCESSING,
-                    payload: searchVal // loading data
-                };
-                dispatch(action);
-
-            if (searchVal == '') {
-                const action = {
-                    type: LOAD_LIST_ITEMS,
-                    payload: []
-                };
-                dispatch(action);
-            } else {
-//setTimeout(() => {
-                httpGet(fullUrl)
-                    .then(
-                        response => {
-                            const res = [];
-
-                        //filter response with title
-                            for ( let item in response) {
-                                if (response[item]['title'].indexOf(searchVal) >= 0 ) {
-                                    res.push(response[item]);
-                                }
-                            } 
-                        
-
-                            const action = {
-                                type: LOAD_LIST_ITEMS,
-                                payload: res
-                            };
-                            dispatch(action);
-                        },
-                        error => {
-
-                            const action = {
-                                type: SHOW_ERROR,
-                                payload: error
-                            };
-                            dispatch(action);
-                        }
-                    );
-                
-              //  }, 500); // end of setTimeout
-
-            }
+            getData(searchVal)(dispatch);
         }
     };
 }
