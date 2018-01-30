@@ -6,6 +6,7 @@ import {
     SET_PROCESSING
 } from '../actions'
 import TList from '../model/model'
+import { getItem } from '../actions'
 
 
 interface IProps {
@@ -26,7 +27,7 @@ class List extends React.Component<IProps, IState> {
         let index = e.target.id;
         this.props.selectItem(index);
     }
-//.replace(searchVal, `<span className='highlight'>`+searchVal+`</span>`)
+
     render() {
         const {listItems, searchVal} = this.props;
 
@@ -37,7 +38,7 @@ class List extends React.Component<IProps, IState> {
                     id={index+''} 
                     value={item.title} 
                     onClick={this.handleChange}>
-                {item.id}: <div id={index+''}>{ item.title.replace(searchVal, `<i className='highlight'>${searchVal}</i>`)}</div> <img src={item.thumbnailUrl} width='20' height='20'/>
+                    {item.id}: <div id={index+''}>{item.title}</div> <img src={item.thumbnailUrl} width='20' height='20'/>
                 </div>);
 
         const text = (!items.length) ? 'Ничего не найдено' : `Найдено: ${items.length}` ;
@@ -63,12 +64,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
     return { 
         selectItem (index) {
-
-            const action = {
-                type: SELECT_ITEM,
-                payload: index
-            };
-            dispatch(action);
+            getItem(index)(dispatch);
         }
     };
 }
