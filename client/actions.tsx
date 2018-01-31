@@ -14,14 +14,6 @@ export function getData(searchVal) {
         };
         dispatch(action);
 
-        // if (searchVal == '') {
-        //     const action = {
-        //         type: LOAD_LIST_ITEMS,
-        //         payload: []
-        //     };
-        //     dispatch(action);
-        //} else {
-
         new Loader().getHints()
             .then(
                 response => {
