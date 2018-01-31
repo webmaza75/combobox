@@ -1,11 +1,12 @@
 class Loader {
 
-    private url: string = `https://jsonplaceholder.typicode.com/photos/`;
-
-    public getHints() {
+    //private url: string = `https://jsonplaceholder.typicode.com/photos/`;
+    private url: string = `https://typeahead-js-twitter-api-proxy.herokuapp.com/demo/search?q=`;
+    public getHints(searchVal) {
         return new Promise((resolve, reject) => {
             let xhr = new XMLHttpRequest();
-            xhr.open('GET', this.url, true);
+            let fullUrl = searchVal ? this.url + searchVal : '';
+            xhr.open('GET', fullUrl, true);
     
             xhr.onload = function () {
                 if (xhr.status == 200) {

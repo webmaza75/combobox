@@ -14,7 +14,7 @@ export function getData(searchVal) {
         };
         dispatch(action);
 
-        loader.getHints()
+        loader.getHints(searchVal)
             .then(
                 response => {
                     if (response) {
