@@ -1,15 +1,6 @@
-export default class Loader {
+class Loader {
 
     private url: string = `https://jsonplaceholder.typicode.com/photos/`;
-    private instance;
-
-    constructor() {
-        if (!this.instance) {
-            this.instance = this;
-        }
-
-        return this.instance;
-    }
 
     public getHints() {
         return new Promise((resolve, reject) => {
@@ -34,3 +25,6 @@ export default class Loader {
         });
     }
 }
+
+const loader = new Loader();
+export default loader;

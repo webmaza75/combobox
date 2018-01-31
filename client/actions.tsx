@@ -1,4 +1,4 @@
-import Loader from './service'
+import loader from './service'
 import { 
     GET_HINTS_FAILURE, 
     GET_HINTS_BEGIN, // true - loading, false - finished
@@ -14,7 +14,7 @@ export function getData(searchVal) {
         };
         dispatch(action);
 
-        new Loader().getHints()
+        loader.getHints()
             .then(
                 response => {
                     if (response) {
