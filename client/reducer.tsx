@@ -1,4 +1,9 @@
-import {LOAD_LIST_ITEMS, SELECT_ITEM, SHOW_ERROR, SET_PROCESSING} from './actions'
+import { 
+    GET_HINTS_FAILURE, 
+    GET_HINTS_BEGIN, // true - loading, false - finished
+    GET_HINTS_SUCCESS,
+    SELECT_ITEM
+} from './consts'
 
 const initialState = {
     listItems: [],
@@ -12,7 +17,7 @@ export default function reducer(state = initialState, action) {
     let newState = {...state};
 
     switch (action.type) {
-        case LOAD_LIST_ITEMS:
+        case GET_HINTS_SUCCESS:
             const tmpList = [...action.payload];
             newState.listItems = tmpList;
             newState.selectedItem = null;
@@ -26,12 +31,12 @@ export default function reducer(state = initialState, action) {
             newState.isLoading = false;
             newState.error = null;
         break;
-        case SHOW_ERROR: 
+        case GET_HINTS_FAILURE: 
             newState.error = action.payload.message;
             newState.isLoading = false;
             newState.selectedItem = null;
         break;
-        case SET_PROCESSING:
+        case GET_HINTS_BEGIN:
             newState.isLoading = true;
             newState.searchVal = action.payload;
             const list = [...newState.listItems];

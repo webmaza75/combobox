@@ -1,54 +1,55 @@
 import Loader from './service'
-
-export const LOAD_LIST_ITEMS = 'load_list_items';
-export const SELECT_ITEM = 'select_item';
-export const SHOW_ERROR = 'show_error';
-export const SET_PROCESSING = 'set_processing'; // true - loading, false - finished
+import { 
+    GET_HINTS_FAILURE, 
+    GET_HINTS_BEGIN, // true - loading, false - finished
+    GET_HINTS_SUCCESS,
+    SELECT_ITEM
+} from './consts'
 
 export function getData(searchVal) {
     return (dispatch) => {
         const action = {
-            type: SET_PROCESSING,
+            type: GET_HINTS_BEGIN,
             payload: searchVal // loading data
         };
         dispatch(action);
 
-        if (searchVal == '') {
-            const action = {
-                type: LOAD_LIST_ITEMS,
-                payload: []
-            };
-            dispatch(action);
-        } else {
+        // if (searchVal == '') {
+        //     const action = {
+        //         type: LOAD_LIST_ITEMS,
+        //         payload: []
+        //     };
+        //     dispatch(action);
+        //} else {
 
-            new Loader().getHints()
-                .then(
-                    response => {
-                        if (response) {
-                            const res = [];
-                            //filter response with title
-                            for ( let item in response) {
-                                if (response[item]['title'].indexOf(searchVal) >= 0 ) {
-                                    res.push(response[item]);
-                                }
-                            } 
-                        
-                            const action = {
-                                type: LOAD_LIST_ITEMS,
-                                payload: res
-                            };
-                            dispatch(action);
-                        }
-                    },
-                    error => {
+        new Loader().getHints()
+            .then(
+                response => {
+                    if (response) {
+                        const res = [];
+                        //filter response with title
+                        for ( let item in response) {
+                            if (response[item]['title'].indexOf(searchVal) >= 0 ) {
+                                res.push(response[item]);
+                            }
+                        } 
+                    
                         const action = {
-                            type: SHOW_ERROR,
-                            payload: error
+                            type: GET_HINTS_SUCCESS,
+                            payload: res
                         };
                         dispatch(action);
                     }
-                );
-            }
+                },
+                error => {
+                    const action = {
+                        type: GET_HINTS_FAILURE,
+                        payload: error
+                    };
+                    dispatch(action);
+                }
+            );
+            //}
     }
 }
 

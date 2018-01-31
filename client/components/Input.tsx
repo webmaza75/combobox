@@ -1,10 +1,5 @@
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
-import {
-    LOAD_LIST_ITEMS,
-    SHOW_ERROR,
-    SET_PROCESSING
-} from '../actions'
 import TList from '../model/model'
 import { getData } from '../actions'
 
@@ -93,7 +88,7 @@ class Input extends React.Component<IProps, IState> {
     }
 }
 
-function mapStateToProps(state: IProps) {
+function mapStateToProps(state: IProps): any {
     return {
         listItems: state.listItems,
         searchVal: state.searchVal,
@@ -103,7 +98,7 @@ function mapStateToProps(state: IProps) {
     };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<any>): any {
 
     return {
         loadListItems: function (searchVal: string) {
@@ -112,4 +107,4 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Input as any);
+export default connect(mapStateToProps, mapDispatchToProps)(Input);

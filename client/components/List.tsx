@@ -1,10 +1,5 @@
 import * as React from 'react'
 import {connect, Dispatch} from 'react-redux'
-import {
-    LOAD_LIST_ITEMS,
-    SELECT_ITEM,
-    SET_PROCESSING
-} from '../actions'
 import TList from '../model/model'
 import { getItem } from '../actions'
 
@@ -52,7 +47,7 @@ class List extends React.Component<IProps, IState> {
     }
 }
 
-function mapStateToProps(state: IProps) {
+function mapStateToProps(state: IProps): any {
     return { 
         listItems: state.listItems,
         selectedItem: state.selectedItem,
@@ -60,7 +55,7 @@ function mapStateToProps(state: IProps) {
     };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<any>): any {
 
     return { 
         selectItem (index) {
@@ -69,4 +64,4 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(List as any);
+export default connect(mapStateToProps, mapDispatchToProps)(List);
