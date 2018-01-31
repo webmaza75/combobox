@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import { Store, createStore } from 'redux';
 import { Provider } from 'react-redux';
 import App from './components/App'
-import reducer from './reducer'
+import reducer from './components/Combobox/reducer'
 
 ReactDOM.render(
   <Provider  store = {createStore(reducer)}>
