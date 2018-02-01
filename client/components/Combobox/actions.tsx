@@ -16,19 +16,11 @@ export function getData(searchVal) {
 
         loader.getHints(searchVal)
             .then(
-                response => {
-                    if (response) {
-                        const res = [];
-                        //filter response with title
-                        for ( let item in response) {
-                            if (response[item]['title'].indexOf(searchVal) >= 0 ) {
-                                res.push(response[item]);
-                            }
-                        } 
-                    
+                response => { 
+                    if (response) {                   
                         const action = {
                             type: GET_HINTS_SUCCESS,
-                            payload: res
+                            payload: response
                         };
                         dispatch(action);
                     }
@@ -41,7 +33,6 @@ export function getData(searchVal) {
                     dispatch(action);
                 }
             );
-            //}
     }
 }
 

@@ -64,7 +64,7 @@ class Input extends React.Component<IProps, IState> {
 
     componentWillReceiveProps (nextProps: IProps) {
         if ( nextProps.selectedItem ) {
-            const item = nextProps.selectedItem['title'];
+            const item = nextProps.selectedItem['screen_name'];
 
             this.setState({ 
                 searchVal: item, 

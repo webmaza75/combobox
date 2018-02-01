@@ -2,6 +2,7 @@ class Loader {
 
     //private url: string = `https://jsonplaceholder.typicode.com/photos/`;
     private url: string = `https://typeahead-js-twitter-api-proxy.herokuapp.com/demo/search?q=`;
+
     public getHints(searchVal) {
         return new Promise((resolve, reject) => {
             let xhr = new XMLHttpRequest();
@@ -9,8 +10,13 @@ class Loader {
             xhr.open('GET', fullUrl, true);
     
             xhr.onload = function () {
-                if (xhr.status == 200) {
-                    resolve(JSON.parse(xhr.response));
+                if (xhr.status == 200) {       
+                    try {
+                        let res = JSON.parse(xhr.response);
+                        resolve(res);
+                    } catch (e) {
+                        resolve([]);
+                    }
                 } else {
                     let error = new Error(xhr.statusText);
                     error.name = xhr.status + '';

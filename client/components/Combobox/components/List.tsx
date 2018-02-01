@@ -25,7 +25,6 @@ class List extends React.Component<IProps, IState> {
 
     render() {
         const {listItems, searchVal} = this.props;
-
         const items = listItems.map(
             (item, index) => 
                 <div 
@@ -33,7 +32,7 @@ class List extends React.Component<IProps, IState> {
                     id={index+''} 
                     value={item.screen_name} 
                     onClick={this.handleChange}>
-                    {item.id}: <div id={index+''}>{item.screen_name}</div>
+                    {item.screen_name}
                 </div>);
 
         const text = (!items.length) ? 'Ничего не найдено' : `Найдено: ${items.length}` ;
