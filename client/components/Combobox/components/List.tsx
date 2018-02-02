@@ -2,6 +2,7 @@ import * as React from 'react'
 import {connect, Dispatch} from 'react-redux'
 import TList from '../model/model'
 import { getItem } from '../actions'
+import Row from './Row'
 
 
 interface IProps {
@@ -27,13 +28,10 @@ class List extends React.Component<IProps, IState> {
         const {listItems, searchVal} = this.props;
         const items = listItems.map(
             (item, index) => 
-                <div 
-                    key={index} 
-                    id={index+''} 
-                    value={item.screen_name} 
-                    onClick={this.handleChange}>
-                    {item.screen_name}
-                </div>);
+                <div onClick={this.handleChange} key={index} id={index+''} value={item.screen_name}>
+                    <Row item={item} onClick={this.handleChange.bind(this)} index={index+''} />
+                </div>
+            );
 
         const text = (!items.length) ? 'Ничего не найдено' : `Найдено: ${items.length}` ;
 

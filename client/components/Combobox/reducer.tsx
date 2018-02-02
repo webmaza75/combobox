@@ -24,7 +24,7 @@ export default function reducer(state = initialState, action) {
             newState.error = null;
             newState.isLoading = false;
         break;
-        case SELECT_ITEM: 
+        case SELECT_ITEM:
             const val = newState.listItems[action.payload];
             newState.selectedItem = val;
             newState.listItems = [val];
