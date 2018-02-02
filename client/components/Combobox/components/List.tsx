@@ -28,9 +28,10 @@ class List extends React.Component<IProps, IState> {
         const {listItems, searchVal} = this.props;
         const items = listItems.map(
             (item, index) => 
-                <div onClick={this.handleChange} key={index} id={index+''} value={item.screen_name}>
-                    <Row item={item} onClick={this.handleChange.bind(this)} index={index+''} />
-                </div>
+                <Row 
+                    onClick={this.handleChange} 
+                    key={index} id={index+''}  
+                    item={item} />
             );
 
         const text = (!items.length) ? 'Ничего не найдено' : `Найдено: ${items.length}` ;

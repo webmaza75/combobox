@@ -1,4 +1,5 @@
 import * as React from 'react'
+import TList from '../model/model'
 
 class Row extends React.Component<any, any> {
 
@@ -7,14 +8,9 @@ class Row extends React.Component<any, any> {
     }
 
     render() {
-        const {item, onClick, index} = this.props;
-
-        return (<div>
-                    <span onClick={onClick.bind(this)} id={index}>{item.id}</span>
-                    : 
-                    <span onClick={onClick.bind(this)} id={index}>{item.screen_name}</span>
-                </div>);
-            }
+        const {item, onClick, id} = this.props;
+        return (<div id={id} onClick={onClick.bind(this)}>{item.screen_name}</div>);
+    }
 }
 
 export default Row;
