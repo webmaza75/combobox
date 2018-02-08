@@ -79,7 +79,7 @@ class Input extends React.Component<IProps, IState> {
 
         return (
             <div>
-                <input className='search__text' type='text' onChange={this.handleChangeSearch} value={this.state.searchVal} />
+                <input id='searchInput' className='search__text' type='text' onChange={this.handleChangeSearch} value={this.state.searchVal} />
                 <span onClick={this.handleResetEvent} className='icon_reset'>&#8634;</span>
                 {err}
                 {loader}

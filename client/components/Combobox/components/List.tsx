@@ -10,6 +10,7 @@ interface IProps {
     selectedItem?: TList
     selectItem?: (index: number) => void,
     searchVal: string,
+    isVisibleList: any
 }
 
 interface IState {
@@ -34,12 +35,19 @@ class List extends React.Component<IProps, IState> {
                     item={item} />
             );
 
-        const text = (!items.length) ? 'Ничего не найдено' : `Найдено: ${items.length}` ;
+        let className;
+
+        if (!items.length)  {
+            className = '';
+        } else { 
+            className = 'search__list';
+        }
 
         return(
             <div className='search__content'>
-                <p className='search__count'>{text}</p>
-                {items}
+                <div className={className} /*onKeyDown={this.}*/ id='list' >
+                    {items}
+                </div>
             </div>
         );
     }
